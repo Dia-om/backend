@@ -20,6 +20,7 @@ class User(Base):
     id = Column(String, primary_key=True, default=uuid4().hex)
     email = Column(String(255), unique=True)
     user_code = Column(String(255))
+    referral_code = Column(String(255))
     password = Column(String(255))
     phone_number = Column(String(255))
     business_name = Column(String(255))

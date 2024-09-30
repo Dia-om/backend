@@ -29,10 +29,11 @@ def sign_up(user:AccountSchema, db:Session) -> tuple[bool,Any]:
 
     if user_instance == None:
         # Basic signup entry to database
-        email=user.email
-        business = user.name
+        # email=user.email
+        # business = user.business_name
+        # image_url = user
         code = code_generator()
-        new_user = User(email=email,business_name=business, user_code=code, id=uuid4().hex)
+        new_user = User(**user.__dict__, user_code=code, id=uuid4().hex)
 
         try:
             db.add(new_user)
