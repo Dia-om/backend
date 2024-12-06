@@ -10,10 +10,11 @@ import random
 from fastapi import status, HTTPException
 from fastapi.encoders import jsonable_encoder
 #from sqlalchemy.exc import InternalError
+from psycopg2 import InternalError
 from sqlalchemy.orm import Session
 
 from app.api.models.user_models import User
-from app.api.schemas.user_schemas import AccountSchema, UserSchema
+from app.api.schemas.user_schemas import AccountSchema, UpdateUserSchema
 
 def code_generator(size=8):
     code = "".join(random.choice(string.ascii_letters+string.digits) for i in range(size))
@@ -46,7 +47,7 @@ def sign_up(user:AccountSchema, db:Session) -> tuple[bool,Any]:
                 "data": jsonable_encoder(new_user)
             }
 
-            return user_exist, response
+            return False, response
         except Exception as e:
             db.rollback()
             # raise HTTPException(
@@ -77,5 +78,34 @@ def sign_in(email:str, db:Session) -> Any:
             }
     
 
-def update_user_details():
-    pass
+def update_user_details(email:str, details: UpdateUserSchema, db:Session) -> Any:
+    # check if user already exist and return data or error
+    user_instance = db.query(User).filter(User.email == email).first()
+
+    if user_instance == None:
+        return  {
+                "status" : status.HTTP_404_NOT_FOUND,
+                "message": "User not found",
+                "data": {}
+            }
+    user_details = details.dict(exclude_unset = True)
+    user_details['date_updated'] = datetime.now()
+
+    print(user_details)
+    
+    try:
+        for key,value in user_details.items():
+            setattr(user_instance,key,value)
+
+        db.commit()
+        db.refresh(user_instance)
+
+        return {
+            "status" : status.HTTP_201_CREATED,
+            "message": "User details updated successfully",
+            "data": jsonable_encoder(user_instance)
+        }
+        
+    except Exception as e:
+        db.rollback()
+        raise e

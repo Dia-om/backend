@@ -12,8 +12,10 @@ class AccountSchema(BaseModel):
     image_url: Optional[str]
     auth_id: Optional[str]
 
-class UserSchema(BaseModel):
-    phone_number: str
-    business_name: str
+class UpdateUserSchema(BaseModel):
+    referral_code: Optional[str]
+    business_name: Optional[str]
     image_url: Optional[str]
     auth_id: Optional[str]
+    phone_number: Optional[str]
+

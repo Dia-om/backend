@@ -13,11 +13,12 @@ from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse, RedirectResponse
 
 
-from app.api.schemas.user_schemas import AccountSchema, UserSchema
+from app.api.schemas.user_schemas import AccountSchema, UpdateUserSchema
 from app.database.connection import get_db
 from app.services.user_services import(
     sign_up,
     sign_in,
+    update_user_details,
 )
 
 router = APIRouter(prefix="/user", tags=["User"])
@@ -26,8 +27,6 @@ config = Config('.env')  # read config from .env file
 
 @router.post('/signup/google')
 async def google_signup(user: AccountSchema, request: Request, db:Session = Depends(get_db), ):
-
-    print(user.email)
 
     exist,resp = sign_up(user,db)
 
@@ -48,4 +47,8 @@ def google_login(email: str, db:Session = Depends(get_db),):
 
     return JSONResponse( status_code= jsonableData['status'], content=jsonableData)
 
+@router.put('/update_profile')
+async def update_profile(email:str,user_details:UpdateUserSchema, db:Session = Depends(get_db),):
+    resp = update_user_details(email,user_details,db)
 
+    return JSONResponse(status_code=resp['status'], content= jsonable_encoder(resp))
