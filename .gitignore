@@ -167,4 +167,4 @@ alembic/
 alembic.ini
 test.py
 main_local.py
-app/*/user_router2.py
+user_router2.py
