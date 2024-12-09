@@ -52,3 +52,16 @@ async def update_profile(email:str,user_details:UpdateUserSchema, db:Session = D
     resp = update_user_details(email,user_details,db)
 
     return JSONResponse(status_code=resp['status'], content= jsonable_encoder(resp))
+
+
+# @router.delete("/delete")
+# async def user_delete(user_id:str,db:Session = Depends(get_db)) -> Any:
+#     """Delete a user from the database"""
+
+#     resp = delete_user(user_id,db)
+#     return JSONResponse(content=jsonable_encoder(resp))
+
+# @router.get("/users")
+# def all_users(db:Session = Depends(get_db)) -> Any:
+#     resp = get_users(db)
+#     return JSONResponse(content= jsonable_encoder(resp))

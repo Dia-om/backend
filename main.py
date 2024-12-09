@@ -6,12 +6,16 @@ from sqlalchemy.orm import Session
 from starlette.middleware.sessions import SessionMiddleware
 
 from app.api.routers.user_router import router as user_routers
+from app.api.routers.upload_router import router as file_routers
 
 v1_router = APIRouter(prefix="/api/v1")
 
 
 v1_router.include_router(
     user_routers,
+)
+v1_router.include_router(
+    file_routers,
 )
 
 app = FastAPI(

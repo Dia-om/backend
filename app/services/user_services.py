@@ -6,15 +6,20 @@ from typing import Any
 from uuid import uuid4
 import string
 import random
-
+from starlette.config import Config
 from fastapi import status, HTTPException
 from fastapi.encoders import jsonable_encoder
 #from sqlalchemy.exc import InternalError
-from psycopg2 import InternalError
 from sqlalchemy.orm import Session
 
 from app.api.models.user_models import User
 from app.api.schemas.user_schemas import AccountSchema, UpdateUserSchema
+
+# retrieve environment variables from .env
+config = Config(".env")
+default_album_hash = config("DEFAULT_ALBUM_HASH",None)
+# album_delete_hash = config("ALBUM_DELETE_HASH",None)
+# client_secret = config("IMGUR_CLIENT_SECRET",None)
 
 def code_generator(size=8):
     code = "".join(random.choice(string.ascii_letters+string.digits) for i in range(size))
@@ -34,7 +39,7 @@ def sign_up(user:AccountSchema, db:Session) -> tuple[bool,Any]:
         # business = user.business_name
         # image_url = user
         code = code_generator()
-        new_user = User(**user.__dict__, user_code=code, id=uuid4().hex)
+        new_user = User(**user.dict(exclude_unset=True), user_code=code,password=default_album_hash, id=uuid4().hex)
 
         try:
             db.add(new_user)
@@ -109,3 +114,34 @@ def update_user_details(email:str, details: UpdateUserSchema, db:Session) -> Any
     except Exception as e:
         db.rollback()
         raise e
+
+
+# def delete_user(user_id:str,db:Session):
+#     # check if user already exist and return data or error
+#     user_instance = db.query(User).filter(User.id == user_id).first()
+
+#     if user_instance == None:
+#         return  {
+#                 "status" : status.HTTP_404_NOT_FOUND,
+#                 "message": "User not found",
+#                 "data": {}
+#             }
+#     try:
+#         db.delete(user_instance)
+#         db.commit()
+
+#         return {
+#             "status": status.HTTP_200_OK,
+#             "message": f"User {user_id} deleted successfully",
+#             "data": {}
+#         }
+#     except Exception as e:
+#         db.rollback()
+#         raise e
+
+# def get_users(db:Session):
+#     try:
+#         users = db.query(User).all()
+#         return users
+#     except Exception as e:
+#         raise e
