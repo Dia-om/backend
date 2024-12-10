@@ -18,6 +18,7 @@ from app.api.schemas.user_schemas import AccountSchema, UpdateUserSchema
 # retrieve environment variables from .env
 config = Config(".env")
 default_album_hash = config("DEFAULT_ALBUM_HASH",None)
+secret = config("SECRET_CODE",None)
 # album_delete_hash = config("ALBUM_DELETE_HASH",None)
 # client_secret = config("IMGUR_CLIENT_SECRET",None)
 
@@ -116,32 +117,45 @@ def update_user_details(email:str, details: UpdateUserSchema, db:Session) -> Any
         raise e
 
 
-# def delete_user(user_id:str,db:Session):
-#     # check if user already exist and return data or error
-#     user_instance = db.query(User).filter(User.id == user_id).first()
+def delete_user(user_id:str,db:Session):
+    # check if user already exist and return data or error
+    user_instance = db.query(User).filter(User.id == user_id).first()
 
-#     if user_instance == None:
-#         return  {
-#                 "status" : status.HTTP_404_NOT_FOUND,
-#                 "message": "User not found",
-#                 "data": {}
-#             }
-#     try:
-#         db.delete(user_instance)
-#         db.commit()
+    if user_instance == None:
+        return  {
+                "status" : status.HTTP_404_NOT_FOUND,
+                "message": "User not found",
+                "data": {}
+            }
+    try:
+        db.delete(user_instance)
+        db.commit()
 
-#         return {
-#             "status": status.HTTP_200_OK,
-#             "message": f"User {user_id} deleted successfully",
-#             "data": {}
-#         }
-#     except Exception as e:
-#         db.rollback()
-#         raise e
+        return {
+            "status": status.HTTP_200_OK,
+            "message": f"User {user_id} deleted successfully",
+            "data": {}
+        }
+    except Exception as e:
+        db.rollback()
+        raise e
 
-# def get_users(db:Session):
-#     try:
-#         users = db.query(User).all()
-#         return users
-#     except Exception as e:
-#         raise e
+def get_users(secret_code:str,db:Session):
+    if secret_code == secret:
+        try:
+            users = db.query(User).all()
+            return users
+        except Exception as e:
+            raise e
+    raise HTTPException(
+        status_code=status.HTTP_400_BAD_REQUEST,
+        detail="Un-Authorized: You don't have valid access")
+
+def user_exist(email:str, db:Session):
+    try:
+        user = db.query(User).filter(User.email == email).first()
+        return {
+            "exist": user is not None
+        }
+    except Exception as e:
+        raise e

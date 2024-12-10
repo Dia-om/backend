@@ -16,9 +16,12 @@ from fastapi.responses import JSONResponse, RedirectResponse
 from app.api.schemas.user_schemas import AccountSchema, UpdateUserSchema
 from app.database.connection import get_db
 from app.services.user_services import(
+    delete_user,
+    get_users,
     sign_up,
     sign_in,
     update_user_details,
+    user_exist,
 )
 
 router = APIRouter(prefix="/user", tags=["User"])
@@ -54,14 +57,19 @@ async def update_profile(email:str,user_details:UpdateUserSchema, db:Session = D
     return JSONResponse(status_code=resp['status'], content= jsonable_encoder(resp))
 
 
-# @router.delete("/delete")
-# async def user_delete(user_id:str,db:Session = Depends(get_db)) -> Any:
-#     """Delete a user from the database"""
+@router.delete("/delete")
+async def user_delete(user_id:str,db:Session = Depends(get_db)) -> Any:
+    """Delete a user from the database"""
 
-#     resp = delete_user(user_id,db)
-#     return JSONResponse(content=jsonable_encoder(resp))
+    resp = delete_user(user_id,db)
+    return JSONResponse(content=jsonable_encoder(resp))
 
-# @router.get("/users")
-# def all_users(db:Session = Depends(get_db)) -> Any:
-#     resp = get_users(db)
-#     return JSONResponse(content= jsonable_encoder(resp))
+@router.get("/users")
+def all_users(secret_code:str,db:Session = Depends(get_db)) -> Any:
+    resp = get_users(secret_code,db)
+    return JSONResponse(content= jsonable_encoder(resp))
+
+@router.get("/exists")
+def check_user(email:str, db:Session= Depends(get_db)) -> Any:
+    resp = user_exist(email,db)
+    return JSONResponse(content= resp)
