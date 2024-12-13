@@ -17,4 +17,4 @@ class UserTemplate(Base):
     date_created = Column(DateTime, default=datetime.now())
     date_updated = Column(DateTime, default=datetime.now())
 
-    user = relationship("User", back_populates="user_templates", lazy="joined")
+    user = relationship("User", back_populates="user_templates", cascade="all, delete",lazy="joined")

@@ -25,4 +25,4 @@ class Invoice(Base):
     date_created = Column(DateTime, default=datetime.now())
     date_updated = Column(DateTime, default=datetime.now())
 
-    user = relationship("User", back_populates="invoices")
+    user = relationship("User", back_populates="invoices",cascade="all, delete")

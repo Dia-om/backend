@@ -19,4 +19,4 @@ class Record(Base):
     date_updated = Column(DateTime, default=datetime.now())
     content = Column(JSON, nullable=False)
 
-    customer = relationship("Customer", back_populates="records")
+    customer = relationship("Customer", back_populates="records",cascade="all, delete")

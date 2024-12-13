@@ -26,6 +26,8 @@ class User(Base):
     business_name = Column(String(255))
     image_url = Column(String)
     auth_id = Column(String(255))
+    album_id = Column(String(255),nullable=True)
+    image_hash = Column(String(255),nullable=True)
     is_deleted = Column(Boolean, default=False)
     date_created = Column(DateTime, default=datetime.now())
     date_updated = Column(DateTime, default=datetime.now())

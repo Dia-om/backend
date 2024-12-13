@@ -18,3 +18,4 @@ class CustomerSchema(BaseModel):
     image_url: Optional[str]
     country: Optional[str]
     state: Optional[str]
+    image_hash: Optional[str]

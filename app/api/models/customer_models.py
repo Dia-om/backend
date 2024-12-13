@@ -22,12 +22,13 @@ class Customer(Base):
     date_of_birth = Column(String(255))
     address = Column(String)
     occupation = Column(String(255))
+    image_hash = Column(String(255), nullable=True)
     image_url = Column(String(255))
     date_created = Column(DateTime, default=datetime.now())
     date_updated = Column(DateTime, default=datetime.now())
     country = Column(String(255))
     state = Column(String(255))
 
-    user = relationship("User", back_populates="customers")
+    user = relationship("User", back_populates="customers",cascade="all, delete")
     records = relationship("Record", back_populates="customer",cascade="all, delete", lazy="joined")
 
