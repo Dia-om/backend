@@ -40,7 +40,7 @@ def sign_up(user:AccountSchema, db:Session) -> tuple[bool,Any]:
         # business = user.business_name
         # image_url = user
         code = code_generator()
-        new_user = User(**user.dict(exclude_unset=True), user_code=code,password=default_album_hash, id=uuid4().hex)
+        new_user = User(**user.dict(exclude_unset=True), user_code=code, album_id=default_album_hash, id=uuid4().hex)
 
         try:
             db.add(new_user)
