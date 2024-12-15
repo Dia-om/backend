@@ -60,3 +60,15 @@ def fetch_customers(user_id:str, db:Session):
         
     else:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Invalid User ID")
+    
+
+def fetch_customer(id:str,db:Session):
+    try:
+        customer = db.query(Customer).filter(Customer.id == id).first()
+
+        if customer is None:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Invalid customer id")
+        
+        return customer
+    except Exception as e:
+        raise e

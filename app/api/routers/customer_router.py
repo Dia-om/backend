@@ -14,6 +14,7 @@ from app.api.schemas.customer_schemas import CustomerSchema
 from app.database.connection import get_db
 from app.services.customer_services import(
     add_customer,
+    fetch_customer,
     fetch_customers,
 )
 
@@ -29,4 +30,9 @@ async def customer_add(user_id:str,details:CustomerSchema, db:Session = Depends(
 @router.get("/customers")
 def get_customers(user_id:str, db:Session = Depends(get_db)) -> Any:
     resp = fetch_customers(user_id,db)
+    return JSONResponse(content=jsonable_encoder(resp))
+
+@router.get("")
+def get_customer(customer_id:str, db:Session = Depends(get_db)) -> Any:
+    resp = fetch_customer(customer_id,db)
     return JSONResponse(content=jsonable_encoder(resp))
