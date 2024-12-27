@@ -18,9 +18,9 @@ class RecordDataItem(BaseModel):
 class RecordCreate(BaseModel):
     title:str
     status : str | None = "pending"
-    content: Dict[RecordDataItem]
+    content: RecordDataItem
 
 class RecordUpdate(BaseModel):
     status: str | None = "pending"
     date_updated: datetime = Field(default_factory=datetime.now)
-    content: Optional[Dict[str, RecordDataItem]]
+    content: Optional[RecordDataItem]
