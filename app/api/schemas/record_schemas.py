@@ -23,4 +23,4 @@ class RecordCreate(BaseModel):
 class RecordUpdate(BaseModel):
     status: str | None = "pending"
     date_updated: datetime = Field(default_factory=datetime.now)
-    content: Optional[Dict[RecordDataItem]]
+    content: Optional[Dict[str, RecordDataItem]]
