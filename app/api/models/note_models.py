@@ -17,4 +17,4 @@ class Note(Base):
     date_updated = Column(DateTime, default=datetime.now())
     content = Column(String, nullable=False)
 
-    user = relationship("User", back_populates="notes",cascade="all, delete")
+    user = relationship("User", back_populates="notes")

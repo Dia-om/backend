@@ -17,4 +17,4 @@ class Draft(Base):
     draft_content = Column(JSON, nullable=False)
     date_created = Column(DateTime, default=datetime.now())
 
-    user = relationship("User", back_populates="drafts",cascade="all, delete")
+    user = relationship("User", back_populates="drafts")

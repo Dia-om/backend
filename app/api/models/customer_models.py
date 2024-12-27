@@ -29,6 +29,6 @@ class Customer(Base):
     country = Column(String(255))
     state = Column(String(255))
 
-    user = relationship("User", back_populates="customers",cascade="all, delete")
+    user = relationship("User", back_populates="customers")
     records = relationship("Record", back_populates="customer",cascade="all, delete", lazy="joined")
 
